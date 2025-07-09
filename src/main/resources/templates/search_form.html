@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>질문 검색</title>
+</head>
+<body>
+    <h1>질문 검색</h1>
+    <form action="/search/results" method="get">
+        <label for="keyword">검색어:</label>
+        <input type="text" id="keyword" name="keyword" required />
+        <button type="submit">검색</button>
+    </form>
+</body>
+</html>

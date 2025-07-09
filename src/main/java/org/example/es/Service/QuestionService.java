@@ -22,7 +22,7 @@ public class QuestionService {
         questionRepository.save(q);
 
         QuestionDocument doc = QuestionDocument.builder()
-                .id(q.getId().toString())
+                .id(q.getId())
                 .title(title)
                 .content(content)
                 .build();

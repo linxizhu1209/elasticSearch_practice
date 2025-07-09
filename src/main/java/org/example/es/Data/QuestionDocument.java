@@ -14,7 +14,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class QuestionDocument {
 
     @Id
-    private String id;
+    private Long id;
 
     private String title;
     private String content;

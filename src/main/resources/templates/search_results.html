@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>검색 결과</title>
+</head>
+<body>
+<h1 th:text="'검색 결과 for: ' + ${keyword}">검색 결과</h1>
+<div th:if="${results.isEmpty()}">
+<p>검색 결과가 없습니다.</p>
+</div>
+<ul th:if="${!results.isEmpty()}">
+    <li th:each="result : ${results}">
+        <strong th:text="${result.title}">제목</strong><br/>
+        <span th:text="${result.content}">내용</span>
+    </li>
+</ul>
+<br>
+<p th:text="'ElasticSearch 검색 시간: ' + ${time} + 'ms'"></p>
+<a href="/search/form"><- 검색으로 돌아가기</a>
+</body>
+</html>
