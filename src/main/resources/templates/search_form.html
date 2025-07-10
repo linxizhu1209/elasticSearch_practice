@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>질문 검색</h1>
-    <form action="/search/results" method="get">
+    <form th:action="@{/search/highlight}" method="get">
         <label for="keyword">검색어:</label>
         <input type="text" id="keyword" name="keyword" required />
         <button type="submit">검색</button>

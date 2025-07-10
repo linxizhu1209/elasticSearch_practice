@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>검색 결과</title>
+    <title>질문 검색 결과</title>
 </head>
 <body>
-<h1 th:text="'검색 결과 for: ' + ${keyword}">검색 결과</h1>
-<div th:if="${results.isEmpty()}">
+<h1>검색 결과</h1>
+<div th:if="${#lists.isEmpty(results)}">
 <p>검색 결과가 없습니다.</p>
 </div>
-<ul th:if="${!results.isEmpty()}">
-    <li th:each="result : ${results}">
-        <strong th:text="${result.title}">제목</strong><br/>
-        <span th:text="${result.content}">내용</span>
-    </li>
-</ul>
+
+<div th:each="result : ${results}">
+    <h3 th:if="${result.highlightedTitle != null}"
+        th:utext="${result.highlightedTitle}"></h3>
+    <h3 th:if="${result.highlightedTitle == null}"
+        th:text="${result.highlightedContent}"></h3>
+    <p th:if="${result.highlightedContent != null}" th:utext="${result.highlightedContent}"></p>
+    <p th:if="${result.highlightedContent == null}" th:text="${result.content}"></p>
+
+</div>
+
 <br>
-<p th:text="'ElasticSearch 검색 시간: ' + ${time} + 'ms'"></p>
+<!--<p th:text="'ElasticSearch 검색 시간: ' + ${time} + 'ms'"></p>-->
 <a href="/search/form"><- 검색으로 돌아가기</a>
 </body>
 </html>
+<style>
+    em {
+        background-color: yellow;   /* 하이라이트 배경 */
+        color: black;               /* 글자색 */
+        font-style: normal;         /* 기울임 제거하고 싶다면 */
+        font-weight: bold;          /* 강조 효과 */
+        padding: 2px;
+        border-radius: 3px;
+    }
+</style>

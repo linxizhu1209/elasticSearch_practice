@@ -3,6 +3,7 @@ package org.example.es.Repository.RepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.example.es.Data.QuestionDocument;
 import org.example.es.Repository.CustomQuestionSearchRepository;
+import org.example.es.dto.HighlightedResult;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -10,6 +11,9 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import java.util.List;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import org.springframework.data.elasticsearch.core.query.HighlightQuery;
+import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
+
 import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.match;
 
 
@@ -31,4 +35,8 @@ public class CustomQuestionSearchRepositoryImpl implements CustomQuestionSearchR
                 .map(SearchHit::getContent)
                 .toList();
     }
+
+
+
+
 }
