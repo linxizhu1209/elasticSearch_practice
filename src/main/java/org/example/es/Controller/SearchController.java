@@ -1,5 +1,6 @@
 package org.example.es.Controller;
 
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import lombok.RequiredArgsConstructor;
 import org.example.es.Data.QuestionDocument;
 import org.example.es.Repository.QuestionDocumentRepository;
@@ -38,8 +39,8 @@ public class SearchController {
     }
 
     @GetMapping("/highlight")
-    public String searchWithHighlight(@RequestParam String keyword, Model model){
-        List<HighlightedResult> results = questionSearchService.searchWithHighlight(keyword);
+    public String searchWithHighlight(@RequestParam String keyword, Model model, @RequestParam(defaultValue = "Desc") SortOrder sortOrder){
+        List<HighlightedResult> results = questionSearchService.searchWithHighlightAndSort(keyword, sortOrder);
         model.addAttribute("results", results);
         return "search_results";
     }

@@ -1,7 +1,7 @@
 package org.example.es.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
-public record HighlightedResult (String highlightedTitle, String highlightedContent){
+public record HighlightedResult (String highlightedTitle, String highlightedContent, OffsetDateTime createdAt){
 }

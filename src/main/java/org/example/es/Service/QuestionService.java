@@ -25,6 +25,7 @@ public class QuestionService {
                 .id(q.getId())
                 .title(title)
                 .content(content)
+                .createdAt(q.getCreatedAt())
                 .build();
         questionDocumentRepository.save(doc);
 

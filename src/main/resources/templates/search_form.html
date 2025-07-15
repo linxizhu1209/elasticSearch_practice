@@ -8,6 +8,14 @@
     <form th:action="@{/search/highlight}" method="get">
         <label for="keyword">검색어:</label>
         <input type="text" id="keyword" name="keyword" required />
+
+        <label for="sortOrder">정렬:</label>
+        <select id="sortOrder" name="sortOrder">
+            <option value="Desc" selected>최신순</option>
+            <option value="Asc">오래된순</option>
+        </select>
+
+
         <button type="submit">검색</button>
     </form>
 </body>

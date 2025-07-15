@@ -16,7 +16,7 @@
         th:text="${result.highlightedContent}"></h3>
     <p th:if="${result.highlightedContent != null}" th:utext="${result.highlightedContent}"></p>
     <p th:if="${result.highlightedContent == null}" th:text="${result.content}"></p>
-
+    <p style="font-size: 0.8em; color: gray;" th:text="'작성일: ' + ${#temporals.format(result.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
 </div>
 
 <br>

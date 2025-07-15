@@ -8,6 +8,8 @@ import org.example.es.Repository.QuestionRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,15 +25,15 @@ public class QuestionDummyLoader implements CommandLineRunner {
         if (questionRepository.count() > 0) return;
         List<Question> questions = new ArrayList<>();
         for (int i=1;i<=10000;i++){
-            String title = "엘라스틱 서치 성능 테스트 질문 " + i;
-            String content = "내용입니다!! - " + i;
+            String title = "질문 입니다 " + i;
+            String content = "내용 입니다!! - " + i;
             Question q = new Question(title, content);
             questions.add(q);
         }
         List<Question> saved = questionRepository.saveAll(questions);
         questionRepository.flush(); // 반
-
-        List<QuestionDocument> docs = saved.stream().map(q -> new QuestionDocument(q.getId(), q.getTitle(), q.getContent()))
+        OffsetDateTime createdAt = OffsetDateTime.now();
+        List<QuestionDocument> docs = saved.stream().map(q -> new QuestionDocument(q.getId(), q.getTitle(), q.getContent(),createdAt))
                 .toList();
         questionDocumentRepository.saveAll(docs);
 

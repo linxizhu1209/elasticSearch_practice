@@ -7,6 +7,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,10 +21,11 @@ public class Question {
 
     private String title;
     private String content;
-
+    private OffsetDateTime createdAt;
     public Question(String title, String content) {
         this.title = title;
         this.content = content;
+        this.createdAt = OffsetDateTime.now();
     }
 
 
