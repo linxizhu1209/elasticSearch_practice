@@ -39,9 +39,16 @@ public class SearchController {
     }
 
     @GetMapping("/highlight")
-    public String searchWithHighlight(@RequestParam String keyword, Model model, @RequestParam(defaultValue = "Desc") SortOrder sortOrder){
-        List<HighlightedResult> results = questionSearchService.searchWithHighlightAndSort(keyword, sortOrder);
+    public String searchWithHighlight(@RequestParam String keyword, Model model,
+                                      @RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "10") int size,
+                                      @RequestParam(defaultValue = "Desc") SortOrder sortOrder){
+        List<HighlightedResult> results = questionSearchService.searchWithHighlightAndSort(keyword, sortOrder, page, size);
         model.addAttribute("results", results);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("sortOrder", sortOrder);
         return "search_results";
     }
 }

@@ -18,6 +18,13 @@
     <p th:if="${result.highlightedContent == null}" th:text="${result.content}"></p>
     <p style="font-size: 0.8em; color: gray;" th:text="'작성일: ' + ${#temporals.format(result.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
 </div>
+<div>
+    <p>현재 페이지: <span th:text="${page + 1}"></span></p>
+
+    <a th:if="${page > 0}"
+       th:href="@{/search/highlight(keyword=${keyword}, page=${page - 1}, size=${size}, sortOrder=${sortOrder})}">이전</a>
+    <a th:href="@{/search/highlight(keyword=${keyword}, page=${page + 1}, size=${size}, sortOrder=${sortOrder})}">다음</a>
+</div>
 
 <br>
 <!--<p th:text="'ElasticSearch 검색 시간: ' + ${time} + 'ms'"></p>-->

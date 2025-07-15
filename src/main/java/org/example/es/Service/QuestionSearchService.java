@@ -8,6 +8,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import lombok.RequiredArgsConstructor;
 import org.example.es.Data.QuestionDocument;
 import org.example.es.dto.HighlightedResult;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -65,7 +66,7 @@ public class QuestionSearchService {
     }).toList();
     }
 
-    public List<HighlightedResult> searchWithHighlightAndSort(String keyword, SortOrder sortOrder) {
+    public List<HighlightedResult> searchWithHighlightAndSort(String keyword, SortOrder sortOrder, int page, int size) {
 
         Query query = QueryBuilders.bool()
                 .should(QueryBuilders.match(m -> m.field("title").query(keyword)))
@@ -84,6 +85,7 @@ public class QuestionSearchService {
         NativeQuery nativeQuery = NativeQuery.builder()
                 .withQuery(query)
                 .withHighlightQuery(highlightQuery)
+                .withPageable(PageRequest.of(page, size))
                 .withSort(List.of(sortOptions))
                 .build();
 
