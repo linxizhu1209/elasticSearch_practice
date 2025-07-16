@@ -1,7 +1,10 @@
 package org.example.es.Service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.GetRequest;
+import co.elastic.clients.elasticsearch.core.GetResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.es.Data.Comment;
 import org.example.es.Data.QuestionDocument;
 import org.example.es.Entity.Question;
 import org.example.es.Repository.QuestionRepository;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -43,4 +47,24 @@ public class QuestionService {
         return q.getId();
     }
 
+    public void addCommentToQuestion(String id, String author, String text) throws IOException {
+        GetRequest request = GetRequest.of(g -> g
+                .index("questions")
+                .id(id));
+
+        GetResponse<QuestionDocument> response = elasticsearchClient.get(request, QuestionDocument.class);
+
+        if(!response.found()){
+            throw new IllegalArgumentException("Question not found");
+        }
+
+        QuestionDocument doc = response.source();
+        doc.addComment(new Comment(author,text, LocalDateTime.now()));
+
+        elasticsearchClient.index(i -> i
+                .index("questions")
+                .id(id)
+                .document(doc)
+        );
+    }
 }

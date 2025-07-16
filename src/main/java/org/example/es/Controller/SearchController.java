@@ -27,17 +27,19 @@ public class SearchController {
     public String searchForm(){
         return "search_form";
     }
-    
+
 
     @GetMapping("/highlight")
-    public String searchWithHighlight(@RequestParam String keyword, Model model,
+    public String searchQuestions(@RequestParam String keyword, Model model,
+                                      @RequestParam(defaultValue = "title") String target,
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "10") int size,
-                                      @RequestParam(defaultValue = "Desc") SortOrder sortOrder) throws IOException {
+                                      @RequestParam(defaultValue = "Desc") String sortOrder) throws IOException {
 
-        List<HighlightedResult> results = questionSearchService.searchWithHighlightAndSort(keyword, sortOrder, page, size);
+        List<HighlightedResult> results = questionSearchService.search(keyword, target, sortOrder, page, size);
         model.addAttribute("results", results);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("target", target);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         model.addAttribute("sortOrder", sortOrder);
@@ -49,6 +51,9 @@ public class SearchController {
     public List<String> autocomplete(@RequestParam String keyword) throws IOException {
         return questionSearchService.autocompleteTitle(keyword);
     }
+
+
+
 
 
 }

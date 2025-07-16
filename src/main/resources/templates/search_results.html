@@ -102,6 +102,33 @@
             padding: 2px;
             border-radius: 3px;
         }
+
+        .matched-comments ul {
+            margin: 0;
+            padding-left: 16px;
+            color: #444;
+        }
+
+        .matched-comments li {
+            background-color: #fff8dc;
+            margin-top: 5px;
+            padding: 6px 10px;
+            border-left: 3px solid #f1aa00;
+            border-radius: 4px;
+            list-style-type: disc;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #f1aa00;
+            margin-bottom: 4px;
+        }
+
+        .result-title:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -113,13 +140,20 @@
     </div>
 
     <div th:each="result : ${results}" class="result-card">
-        <div class="result-title" th:if="${result.highlightedTitle != null}" th:utext="${result.highlightedTitle}"></div>
-        <div class="result-title" th:if="${result.highlightedTitle == null}" th:text="${result.title}"></div>
+        <a th:href="@{'/questions/' + ${result.id}}">
+            <div class="result-title" th:utext="${result.highlightedTitle ?: result.title}"></div>
+        </a>
 
-        <div class="result-content" th:if="${result.highlightedContent != null}" th:utext="${result.highlightedContent}"></div>
-        <div class="result-content" th:if="${result.highlightedContent == null}" th:text="${result.content}"></div>
+        <div class="result-content" th:utext="${result.highlightedContent ?: result.content}"></div>
 
         <div class="created-at" th:text="'작성일: ' + ${#temporals.format(result.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+
+        <div class="matched-comments" th:if="${result.matchedComments != null}">
+            <div style="margin-top: 10px; font-weight: bold;">관련 댓글</div>
+            <ul>
+                <li th:each="comment : ${result.matchedComments}" th:utext="${comment}"></li>
+            </ul>
+        </div>
     </div>
 
     <div class="pagination">

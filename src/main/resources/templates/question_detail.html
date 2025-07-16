@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>질문 상세</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: #fdfbea;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 50px;
+            color: #333;
+        }
+        .question-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 700px;
+            margin: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 { color: #f1aa00; }
+        .comment-box {
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .comment {
+            background: #fff8e1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .comment-form {
+            margin-top: 20px;
+        }
+        input, textarea {
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #f1aa00;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="question-box">
+    <h1 th:text="${question.title}">제목</h1>
+    <p th:text="${question.content}">내용</p>
+
+    <div class="comment-form">
+        <form th:action="@{'/questions/' + ${question.id} + '/comments'}" method="post">
+            <input type="text" name="author" placeholder="작성자" required />
+            <textarea name="text" placeholder="댓글을 입력하세요" required></textarea>
+            <button type="submit">댓글 달기</button>
+        </form>
+    </div>
+
+    <div class="comment-box">
+        <h3>댓글</h3>
+        <div th:each="comment : ${question.comments}">
+            <div class="comment">
+                <p><strong th:text="${comment.author}">작성자</strong></p>
+                <p th:text="${comment.text}">내용</p>
+                <p style="font-size: 0.8em; color: gray;" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

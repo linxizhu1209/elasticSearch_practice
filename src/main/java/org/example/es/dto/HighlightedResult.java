@@ -2,6 +2,13 @@ package org.example.es.dto;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.List;
 
-public record HighlightedResult (String highlightedTitle, String highlightedContent, LocalDateTime createdAt){
+public record HighlightedResult (
+        Long id,
+        String highlightedTitle,
+        String highlightedContent,
+        LocalDateTime createdAt,
+        List<String> matchedComments
+        ){
 }
