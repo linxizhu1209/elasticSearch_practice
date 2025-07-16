@@ -2,15 +2,91 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>질문 등록</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fdfbea;
+            color: #333;
+            text-align: center;
+            padding-top: 80px;
+        }
+
+        h1 {
+            color: #f1aa00;
+        }
+
+        form {
+            background: white;
+            display: inline-block;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #f1aa00;
+            border-radius: 6px;
+            outline: none;
+            resize: vertical;
+        }
+
+        textarea {
+            height: 120px;
+        }
+
+        button[type="submit"] {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #f1aa00;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #ffa800;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #f1aa00;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>질문 등록</h1>
-    <form action="/questions" method="post" th:object="${question}">
-        <label for="title">제목:</label>
-        <input type="text" id="title" name="title" th:field="*{title}" required /><br/>
-        <label for="content">내용:</label>
-        <textarea id="content" name="content" th:field="*{content}" required></textarea><br/>
-        <button type="submit">등록</button>
-    </form>
+<h1>질문 등록</h1>
+<form action="/questions" method="post" th:object="${question}">
+    <label for="title">제목:</label>
+    <input type="text" id="title" name="title" th:field="*{title}" required />
+
+    <label for="content">내용:</label>
+    <textarea id="content" name="content" th:field="*{content}" required></textarea>
+
+    <button type="submit">등록</button>
+</form>
+
+<br/>
+<a href="/search/form" class="back-link">← 질문 검색으로 돌아가기</a>
 </body>
 </html>

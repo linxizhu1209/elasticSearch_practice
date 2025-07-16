@@ -2,19 +2,238 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>질문 검색</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fdfbea;
+            text-align: center;
+            padding-top: 80px;
+            color: #333;
+        }
+
+        h1 {
+            color: #f1aa00;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .search-btn-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        #search-container {
+            position: relative;
+            width: 100%;
+        }
+        label {
+            font-weight: bold;
+            margin: 10px 0 5px;
+            display: block;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            font-size: 14px;
+            border: 2px solid #f1aa00;
+            border-radius: 6px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 150px;
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: white;
+            margin-top: 8px;
+        }
+
+        button {
+            background-color: #f1aa00;
+            color: white;
+            font-weight: bold;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
+
+        button:hover {
+            background-color: #ffa800;
+        }
+
+        button[type="submit"] {
+            background-color: #f1aa00;
+            color: white;
+            font-weight: bold;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #ffa800;
+        }
+
+        #keyword {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #f1aa00;
+            border-radius: 6px;
+            outline: none;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        #keyword:focus {
+            border-color: #ffa800;
+        }
+        .autocomplete-suggestions {
+            border: 1px solid #ccc;
+            border-top: none;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            background-color: white;
+            width: 300px;
+            z-index: 1000;
+            margin-top: 2px;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .autocomplete-suggestion {
+            padding: 8px 12px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .autocomplete-suggestion:hover {
+            background-color: #fff8e1;
+        }
+        .form-wrapper {
+            display: inline-block;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+
+
+        .sort-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .register-btn {
+            background-color: #ffd54f;
+            color: #333;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .register-btn:hover {
+            background-color: #ffc107;
+        }
+
+        .top-button-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>질문 검색</h1>
-    <form th:action="@{/search/highlight}" method="get">
-        <label for="keyword">검색어:</label>
-        <input type="text" id="keyword" name="keyword" required />
+<h1>질문 검색</h1>
 
+<div class="form-wrapper">
+    <form th:action="@{/search/highlight}" method="get" autocomplete="off">
+        <!-- 질문 등록 버튼 -->
+        <div class="top-button-wrapper">
+            <a href="/questions/form" class="register-btn">
+                <i class="fa-solid fa-pen-to-square"></i> 질문 등록
+            </a>
+        </div>
+
+        <!-- 검색어 -->
+        <div id="search-container">
+            <label for="keyword">검색어:</label>
+            <input type="text" id="keyword" name="keyword" required />
+            <div id="autocomplete-results" class="autocomplete-suggestions"></div>
+        </div>
+
+        <!-- 정렬 -->
         <label for="sortOrder">정렬:</label>
         <select id="sortOrder" name="sortOrder">
             <option value="Desc" selected>최신순</option>
             <option value="Asc">오래된순</option>
         </select>
-        <button type="submit">검색</button>
+
+        <!-- 검색 버튼 -->
+        <div class="search-btn-wrapper">
+            <button type="submit">검색</button>
+        </div>
     </form>
+</div>
+    <script>
+        $(document).ready(function () {
+            $('#keyword').on('input', function () {
+                const keyword = $(this).val();
+                if (!keyword) {
+                    $('#autocomplete-results').empty();
+                    return;
+                }
+
+                $.ajax({
+                    url: '/search/autocomplete',
+                    method: 'GET',
+                    data: { keyword: keyword },
+                    success: function (data) {
+                        const list = data.map(item =>
+                            `<div class="autocomplete-suggestion">${item}</div>`
+                        ).join('');
+                        $('#autocomplete-results').html(list);
+                    },
+                    error: function () {
+                        $('#autocomplete-results').empty();
+                    }
+                });
+            });
+
+            $(document).on('click', '.autocomplete-suggestion', function () {
+                $('#keyword').val($(this).text());
+                $('#autocomplete-results').empty();
+            });
+
+            $(document).on('keydown', function (e) {
+                if (e.key === "Escape") {
+                    $('#autocomplete-results').empty();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

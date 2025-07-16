@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 @Entity
 @Getter
@@ -21,11 +20,11 @@ public class Question {
 
     private String title;
     private String content;
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
     public Question(String title, String content) {
         this.title = title;
         this.content = content;
-        this.createdAt = OffsetDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
 

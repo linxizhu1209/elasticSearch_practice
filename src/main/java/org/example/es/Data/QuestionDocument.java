@@ -1,20 +1,20 @@
 package org.example.es.Data;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Id;
 import lombok.*;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.List;
 
-@Document(indexName = "questions")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionDocument {
 
     @Id
@@ -23,7 +23,9 @@ public class QuestionDocument {
     private String title;
     private String content;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_time)
-    private OffsetDateTime createdAt;
+    private String createdAt;
+
+    @JsonProperty("titleSuggest")
+    private List<String> titleSuggest; // 자동완성용 필드
 
 }

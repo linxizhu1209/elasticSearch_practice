@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.IOException;
+
 @Controller
 @RequiredArgsConstructor
 public class ViewController {
@@ -23,7 +25,7 @@ public class ViewController {
     }
 
     @PostMapping("/questions")
-    public String createQuestion(@ModelAttribute QuestionCreateRequest request) {
+    public String createQuestion(@ModelAttribute QuestionCreateRequest request) throws IOException {
         questionService.createQuestion(request.getTitle(), request.getContent());
         return "redirect:/search/form";
     }

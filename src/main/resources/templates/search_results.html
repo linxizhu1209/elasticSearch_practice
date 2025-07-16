@@ -1,43 +1,144 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>질문 검색 결과</title>
+    <title>검색 결과</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          integrity="sha512-papUoDxtumP0IvFQpQQf7TQEvUO9MeMsbLeHAYMBPtQ6G5wSYLDH10iURgh+1t8VY+q1Tx6NTV3qqs8hc99X4g=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+    <style>
+        body {
+            background-color: #fefced;
+            font-family: 'Segoe UI', sans-serif;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #f4a300;
+            margin-top: 40px;
+        }
+
+        .result-container {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .result-card {
+            text-align: left;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #f4a30050;
+            border-radius: 10px;
+            background-color: #fffef8;
+        }
+
+        .result-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-content {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .created-at {
+            font-size: 0.85em;
+            color: gray;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .pagination a {
+            background-color: #f4a300;
+            color: white;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .pagination a:hover {
+            background-color: #e19400;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            display: inline-block;
+            color: #f4a300;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .back-link i {
+            margin-right: 6px;
+        }
+
+        .back-link:hover {
+            color: #e19400;
+        }
+
+        em {
+            background-color: yellow;
+            color: black;
+            font-style: normal;
+            font-weight: bold;
+            padding: 2px;
+            border-radius: 3px;
+        }
+    </style>
 </head>
 <body>
 <h1>검색 결과</h1>
-<div th:if="${#lists.isEmpty(results)}">
-<p>검색 결과가 없습니다.</p>
-</div>
+<div class="result-container">
 
-<div th:each="result : ${results}">
-    <h3 th:if="${result.highlightedTitle != null}"
-        th:utext="${result.highlightedTitle}"></h3>
-    <h3 th:if="${result.highlightedTitle == null}"
-        th:text="${result.highlightedContent}"></h3>
-    <p th:if="${result.highlightedContent != null}" th:utext="${result.highlightedContent}"></p>
-    <p th:if="${result.highlightedContent == null}" th:text="${result.content}"></p>
-    <p style="font-size: 0.8em; color: gray;" th:text="'작성일: ' + ${#temporals.format(result.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
-</div>
-<div>
-    <p>현재 페이지: <span th:text="${page + 1}"></span></p>
+    <div th:if="${#lists.isEmpty(results)}">
+        <p>검색 결과가 없습니다.</p>
+    </div>
 
-    <a th:if="${page > 0}"
-       th:href="@{/search/highlight(keyword=${keyword}, page=${page - 1}, size=${size}, sortOrder=${sortOrder})}">이전</a>
-    <a th:href="@{/search/highlight(keyword=${keyword}, page=${page + 1}, size=${size}, sortOrder=${sortOrder})}">다음</a>
-</div>
+    <div th:each="result : ${results}" class="result-card">
+        <div class="result-title" th:if="${result.highlightedTitle != null}" th:utext="${result.highlightedTitle}"></div>
+        <div class="result-title" th:if="${result.highlightedTitle == null}" th:text="${result.title}"></div>
 
-<br>
-<!--<p th:text="'ElasticSearch 검색 시간: ' + ${time} + 'ms'"></p>-->
-<a href="/search/form"><- 검색으로 돌아가기</a>
+        <div class="result-content" th:if="${result.highlightedContent != null}" th:utext="${result.highlightedContent}"></div>
+        <div class="result-content" th:if="${result.highlightedContent == null}" th:text="${result.content}"></div>
+
+        <div class="created-at" th:text="'작성일: ' + ${#temporals.format(result.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+    </div>
+
+    <div class="pagination">
+        <a th:if="${page > 0}"
+           th:href="@{/search/highlight(keyword=${keyword}, page=${page - 1}, size=${size}, sortOrder=${sortOrder})}">
+            <i class="fas fa-arrow-left"></i> 이전
+        </a>
+        <a th:href="@{/search/highlight(keyword=${keyword}, page=${page + 1}, size=${size}, sortOrder=${sortOrder})}">
+            다음 <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <span>현재 페이지: <span th:text="${page + 1}"></span></span>
+    </div>
+
+    <a href="/search/form" class="back-link">
+        <i class="fas fa-arrow-left"></i> 검색으로 돌아가기
+    </a>
+</div>
 </body>
 </html>
-<style>
-    em {
-        background-color: yellow;   /* 하이라이트 배경 */
-        color: black;               /* 글자색 */
-        font-style: normal;         /* 기울임 제거하고 싶다면 */
-        font-weight: bold;          /* 강조 효과 */
-        padding: 2px;
-        border-radius: 3px;
-    }
-</style>
