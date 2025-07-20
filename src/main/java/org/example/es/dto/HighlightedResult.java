@@ -9,6 +9,7 @@ public record HighlightedResult (
         String highlightedTitle,
         String highlightedContent,
         LocalDateTime createdAt,
-        List<String> matchedComments
+        List<String> matchedComments,
+        List<CommentDto> comments
         ){
 }

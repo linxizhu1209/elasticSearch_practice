@@ -5,6 +5,7 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Builder;
 import org.apache.http.HttpHost;
@@ -22,7 +23,7 @@ public class ElasticsearchConfig {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         JacksonJsonpMapper mapper = new JacksonJsonpMapper(objectMapper);
 
         RestClientTransport transport = new RestClientTransport(restClient, mapper);

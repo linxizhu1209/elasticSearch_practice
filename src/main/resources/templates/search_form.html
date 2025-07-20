@@ -162,54 +162,144 @@
             margin-bottom: 10px;
         }
 
+        .search-main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        /* Position the 인기 검색어 box */
+        .popular-keywords-container {
+            position: absolute;
+            top: 80px;
+            right: 100px;
+            width: 200px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .popular-keywords-container ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .popular-keywords-container a {
+            display: block;
+            color: #337ab7;
+            text-decoration: none;
+            margin-bottom: 5px;
+        }
+
 
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<h1>질문 검색</h1>
-
-<div class="form-wrapper">
-    <form th:action="@{/search/highlight}" method="get" autocomplete="off">
-        <!-- 질문 등록 버튼 -->
-        <div class="top-button-wrapper">
-            <a href="/questions/form" class="register-btn">
-                <i class="fa-solid fa-pen-to-square"></i> 질문 등록
-            </a>
-        </div>
-
-        <!-- 검색어 -->
-        <div id="search-container">
-            <label for="keyword">검색어:</label>
-            <input type="text" id="keyword" name="keyword" required />
-            <div id="autocomplete-results" class="autocomplete-suggestions"></div>
-            <label for="target">검색 대상:</label>
-            <select id="target" name="target">
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-                <option value="comments">댓글</option>
-            </select>
-        </div>
-
-        <!-- 정렬 -->
-        <label for="sortOrder">정렬:</label>
-        <select id="sortOrder" name="sortOrder">
-            <option value="Desc" selected>최신순</option>
-            <option value="Asc">오래된순</option>
-        </select>
-
-        <!-- 검색 버튼 -->
-        <div class="search-btn-wrapper">
-            <button type="submit">검색</button>
-        </div>
-    </form>
+<div class="popular-keywords-container">
+    <strong style="color: red;">🔥 인기 검색어</strong>
+    <ul>
+        <li th:each="keyword : ${popularKeywords}">
+            <a th:href="@{/search/highlight(target='title', keyword=${keyword})}" th:text="${keyword}"></a>
+        </li>
+    </ul>
 </div>
-    <script>
-        $(document).ready(function () {
-            $('#keyword').on('input', function () {
-                const keyword = $(this).val();
+
+<div class="search-main-container">
+    <h1 style="color: orange;">질문 검색</h1>
+    <div class="form-wrapper">
+        <form th:action="@{/search/highlight}" method="get" autocomplete="off">
+            <!-- 질문 등록 버튼 -->
+            <div class="top-button-wrapper" style="text-align: right; margin-bottom: 10px;">
+                <a href="/questions/form" class="register-btn">
+                    <i class="fa-solid fa-pen-to-square"></i> 질문 등록
+                </a>
+            </div>
+
+            <!-- 검색 대상 -->
+            <div style="margin-bottom: 10px;">
+                <label for="target">검색 대상:</label>
+                <select id="target" name="target">
+                    <option th:value="'title'" th:selected="${target == 'title'}">제목</option>
+                    <option th:value="'content'" th:selected="${target == 'content'}">내용</option>
+                    <option th:value="'comments'" th:selected="${target == 'comments'}">댓글</option>
+                </select>
+            </div>
+
+            <!-- 검색어 or 댓글 검색 조건 -->
+            <div id="search-container" style="margin-bottom: 10px;">
+                <!-- 검색어 영역 -->
+                <div id="keyword-fields">
+                    <label for="keyword">검색어:</label>
+                    <input type="text" id="keyword" name="keyword" th:value="${keyword}" placeholder="검색어를 입력하세요" />
+                    <div id="autocomplete-results" class="autocomplete-suggestions"></div>
+                </div>
+
+                <!-- 댓글 검색 영역 -->
+                <div id="comment-fields" style="display: none;">
+                    <label for="author">댓글 작성자:</label>
+                    <input type="text" name="author" th:value="${author}" placeholder="예: Kim" />
+
+                    <label for="text">댓글 내용:</label>
+                    <input type="text" name="text" th:value="${text}" placeholder="예: 감사합니다" />
+                </div>
+            </div>
+
+            <!-- 정렬 -->
+            <div style="margin-bottom: 10px;">
+                <label for="sortOrder">정렬:</label>
+                <select id="sortOrder" name="sortOrder">
+                    <option th:value="'Desc'" th:selected="${sortOrder == 'Desc'}">최신순</option>
+                    <option th:value="'Asc'" th:selected="${sortOrder == 'Asc'}">오래된순</option>
+                </select>
+            </div>
+
+            <!-- 검색 버튼 -->
+            <div class="search-btn-wrapper" style="text-align: center;">
+                <button type="submit">검색</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const targetSelect = document.getElementById('target');
+        const keywordFields = document.getElementById('keyword-fields');
+        const commentFields = document.getElementById('comment-fields');
+        const form = document.querySelector("form");
+
+        function updateFormAction() {
+            const targetValue = targetSelect.value;
+            if ( targetValue === "comments") {
+                form.action = "/search/comment";
+                keywordFields.style.display = 'none';
+                commentFields.style.display = 'block';
+            } else {
+                form.action = "/search/highlight";
+                keywordFields.style.display = 'block';
+                commentFields.style.display = 'none';
+            }
+
+        }
+
+        updateFormAction();
+        // 값이 바뀌면 즉시 반영
+        targetSelect.addEventListener('change', updateFormAction);
+    });
+
+    $(document).ready(function () {
+        const $keywordInput = $('#keyword');
+        const $autocomplete = $('#autocomplete-results');
+
+        if ($keywordInput.length) {
+            // 입력 시 자동완성
+            $keywordInput.on('input', function () {
+                const keyword = $(this).val().trim();
                 if (!keyword) {
-                    $('#autocomplete-results').empty();
+                    $autocomplete.empty();
                     return;
                 }
 
@@ -221,25 +311,42 @@
                         const list = data.map(item =>
                             `<div class="autocomplete-suggestion">${item}</div>`
                         ).join('');
-                        $('#autocomplete-results').html(list);
+                        $autocomplete.html(list);
                     },
                     error: function () {
-                        $('#autocomplete-results').empty();
+                        $autocomplete.empty();
                     }
                 });
             });
 
-            $(document).on('click', '.autocomplete-suggestion', function () {
-                $('#keyword').val($(this).text());
-                $('#autocomplete-results').empty();
-            });
-
-            $(document).on('keydown', function (e) {
-                if (e.key === "Escape") {
-                    $('#autocomplete-results').empty();
+            // 클릭만 했을 때 keyword가 비어있다면 리스트 제거
+            $keywordInput.on('focus', function () {
+                if (!$(this).val().trim()) {
+                    $autocomplete.empty();
                 }
             });
-        });
-    </script>
+
+            // 항목 선택
+            $(document).on('click', '.autocomplete-suggestion', function () {
+                $keywordInput.val($(this).text());
+                $autocomplete.empty();
+            });
+
+            // ESC 키 눌렀을 때 닫기
+            $(document).on('keydown', function (e) {
+                if (e.key === "Escape") {
+                    $autocomplete.empty();
+                }
+            });
+
+            // 외부 클릭 시 닫기
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('#keyword, #autocomplete-results').length) {
+                    $autocomplete.empty();
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

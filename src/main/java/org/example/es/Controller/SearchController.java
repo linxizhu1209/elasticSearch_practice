@@ -24,7 +24,9 @@ public class SearchController {
     private final QuestionSearchService questionSearchService;
 
     @GetMapping("/form")
-    public String searchForm(){
+    public String searchForm(Model model) throws IOException {
+        List<String> popularKeywords = questionSearchService.getTopKeywordsLast7Days();
+        model.addAttribute("popularKeywords", popularKeywords);
         return "search_form";
     }
 
@@ -52,6 +54,28 @@ public class SearchController {
         return questionSearchService.autocompleteTitle(keyword);
     }
 
+
+    @GetMapping("/comment")
+    public String searchByComment(
+            @RequestParam String author,
+            @RequestParam String text,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "Desc") String sortOrder,
+            Model model
+    ) throws IOException {
+        List<HighlightedResult> results = questionSearchService.searchByComment(author,text,sortOrder,page,size);
+
+        model.addAttribute("results", results);
+        model.addAttribute("author", author);
+        model.addAttribute("text", text);
+        model.addAttribute("target","comments");
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("sortOrder", sortOrder);
+        return "search_results";
+
+    }
 
 
 

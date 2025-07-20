@@ -11,10 +11,7 @@ import org.example.es.Entity.QuestionCreateRequest;
 import org.example.es.Service.QuestionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -38,7 +35,13 @@ public class ViewController {
     }
 
     @GetMapping("/questions/{id}")
-    public String getQuestionDetail(@PathVariable String id, Model model) throws IOException {
+    public String getQuestionDetail(@PathVariable String id,
+                                    @RequestParam(required = false) String keyword,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "10") int size,
+                                    @RequestParam(defaultValue = "Desc") String sortOrder,
+                                    @RequestParam(defaultValue = "title") String target,
+                                    Model model) throws IOException {
         GetRequest request = new GetRequest.Builder().index("questions").id(id).build();
 
         GetResponse<QuestionDocument> response = elasticsearchClient.get(request, QuestionDocument.class);
@@ -48,6 +51,13 @@ public class ViewController {
         }
 
         model.addAttribute("question", response.source());
+
+        model.addAttribute("keyword",keyword);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("target", target);
+
         return "question_detail";
     }
 

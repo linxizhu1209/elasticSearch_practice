@@ -8,6 +8,8 @@
           integrity="sha512-papUoDxtumP0IvFQpQQf7TQEvUO9MeMsbLeHAYMBPtQ6G5wSYLDH10iURgh+1t8VY+q1Tx6NTV3qqs8hc99X4g=="
           crossorigin="anonymous"
           referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
             background-color: #fefced;
@@ -140,7 +142,12 @@
     </div>
 
     <div th:each="result : ${results}" class="result-card">
-        <a th:href="@{'/questions/' + ${result.id}}">
+        <a th:href="@{'/questions/' + ${result.id} +
+              '?keyword=' + ${keyword} +
+              '&page=' + ${page} +
+              '&size=' + ${size} +
+              '&sortOrder=' + ${sortOrder} +
+              '&target=' + ${target}}">
             <div class="result-title" th:utext="${result.highlightedTitle ?: result.title}"></div>
         </a>
 
@@ -148,11 +155,19 @@
 
         <div class="created-at" th:text="'작성일: ' + ${#temporals.format(result.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
 
-        <div class="matched-comments" th:if="${result.matchedComments != null}">
-            <div style="margin-top: 10px; font-weight: bold;">관련 댓글</div>
-            <ul>
-                <li th:each="comment : ${result.matchedComments}" th:utext="${comment}"></li>
-            </ul>
+<!--        <div class="matched-comments" th:if="${result.matchedComments != null}">-->
+<!--            <div style="margin-top: 10px; font-weight: bold;">관련 댓글</div>-->
+<!--            <div th:each="comment : ${result.matchedComments}" style="margin-bottom: 8px;">-->
+<!--                <i class="fas fa-comment-dots" style="margin-right: 6px; color: #3498db;"></i>-->
+<!--                <span th:utext="${comment}"></span>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="all-comments" th:if="${result.comments != null and !result.comments.isEmpty()}">
+            <div style="margin-top: 15px; font-weight: bold;">💬 전체 댓글</div>
+            <div th:each="comment : ${result.comments}" style="font-size: 0.9em; margin: 3px 0;">
+                <span style="color: #888;">[<span th:text="${comment.author}"></span>]</span>
+                <span th:text="${comment.text}"></span>
+            </div>
         </div>
     </div>
 
