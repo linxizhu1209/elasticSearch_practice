@@ -27,6 +27,7 @@ public class QuestionDocument {
     @JsonProperty("titleSuggest")
     private List<String> titleSuggest; // 자동완성용 필드
     private List<Comment> comments;
+    private List<Comment> commentsFlat; // object 타입 실험
 
     public void addComment(Comment comment) {
         if(comments == null){
