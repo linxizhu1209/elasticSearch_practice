@@ -17,5 +17,21 @@ services:
       - 9200:9200
     volumes:
       - es_data:/usr/share/elasticsearch/data
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 12341234
+      MYSQL_DATABASE: search_test
+    ports:
+      - 3307:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
 volumes:
   es_data:
+  mysql_data:
