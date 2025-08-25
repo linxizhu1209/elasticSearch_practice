@@ -27,7 +27,7 @@ public class QuestionService {
             throw new IllegalArgumentException("Title and content cannot be empty");
         }
         Question q = new Question(title,content);
-        questionRepository.save(q);
+//        questionRepository.save(q);
 
         String createdAtStr = q.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME);
 

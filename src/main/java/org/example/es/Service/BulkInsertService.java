@@ -119,7 +119,7 @@ public class BulkInsertService {
         for (BulkResponseItem item : response.items()) {
             if (item.error() != null) {
                 // 실패한 요청을 Redis 큐에 추가
-                B
+
                 redisTemplate.opsForList().leftPush("retry:es-bulk", toJson(item.operation()));
                 System.err.println("❌ 실패한 문서 ID: " + item.id());
             }

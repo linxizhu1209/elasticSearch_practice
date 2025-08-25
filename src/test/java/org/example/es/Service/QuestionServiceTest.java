@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +28,7 @@ class QuestionServiceTest {
     QuestionDocumentRepository questionDocumentRepository;
 
     @Test
-    void 질문_등록_성공() {
+    void 질문_등록_성공() throws IOException {
         // given
         String title = "엘라스틱서치에 대하여";
         String content = "엘라스틱서치란 무엇인지 알려주세요.";
@@ -42,7 +43,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void 질문_등록_실패_예시(){
+    void 질문_등록_실패_예시() throws IOException {
         // given
         String title = "엘라스틱서치에 대하여";
         String content = "엘라스틱서치란 무엇인지 알려주세요.";

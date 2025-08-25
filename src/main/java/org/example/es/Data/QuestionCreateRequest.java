@@ -1,4 +1,4 @@
-package org.example.es.Entity;
+package org.example.es.Data;
 
 import lombok.Data;
 

@@ -75,10 +75,6 @@ public class QuestionDualIndexService {
         Query authorMatch = MatchQuery.of(m -> m.field("comments.author").query(author))._toQuery();
         Query textMatch = MatchQuery.of(m -> m.field("comments.text").query(text))._toQuery();
 
-//        Query query = BoolQuery.of(b -> b
-//                .must(List.of(authorMatch, textMatch))
-//        )._toQuery();
-
         Query query = BoolQuery.of(b -> b
                 .must(List.of(authorMatch, textMatch))
         )._toQuery();
